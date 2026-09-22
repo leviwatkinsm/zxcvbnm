@@ -3,6 +3,11 @@ layout: default
 title: "文章分类与内容导航"
 permalink: /articles/
 ---
+---
+layout: default
+title: "文章分类与内容导航"
+permalink: /articles/
+---
 # 加拿大pc28预测类文章汇总页
 
 [← 返回 zxcvbnm 内容导航](README.md)
