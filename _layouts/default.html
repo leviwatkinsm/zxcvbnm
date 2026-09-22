@@ -1,139 +1,115 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+{% assign is_home = false %}
+{% assign is_articles = false %}
+{% if page.url == '/' %}{% assign is_home = true %}{% endif %}
+{% if page.url == '/articles/' %}{% assign is_articles = true %}{% endif %}
 
-<head>
-  <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-  <title>
-    {{ page.title | default: "pc财经内容导航中心" }}
-  </title>
-
-  <meta name="description"
-        content="{{ page.description | default: '财经文章分类、最新内容与资料导航。' }}">
-
-  <link rel="stylesheet"
-        href="{{ '/assets/style.css' | relative_url }}">
-</head>
-
-<body>
-
-<header class="site-header">
-
-  <div class="header-inner">
-
-    <a href="{{ '/' | relative_url }}" class="logo">
-      pc财经内容导航中心
-    </a>
-
-    <nav class="nav">
-      <a href="{{ '/' | relative_url }}">首页</a>
-      <a href="{{ '/articles/' | relative_url }}#all-articles">全部文章</a>
-    </nav>
-
-  </div>
-
-</header>
-
-
-<section class="hero">
-
-  <div class="hero-inner">
-
-    <span class="hero-tag">
-      CONTENT CENTER
-    </span>
-
-    <h1>
-      财经文章与资料导航中心
-    </h1>
-
-    <p class="hero-desc">
-      汇总最新发布内容、专题文章与资料索引，
-      通过分类快速查找需要的内容。
-    </p>
-
-    <div class="hero-actions">
-
-      <a href="{{ '/articles/' | relative_url }}#all-articles"
-         class="btn-primary">
-        浏览全部文章
-      </a>
-
-      <a href="#latest"
-         class="btn-secondary">
-        最新发布
-      </a>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<section class="stats">
-
-  {% assign article_count = 0 %}
-  {% for article in site.pages %}
-    {% assign article_path = article.path %}
-    {% assign path_parts = article_path | split: '/' %}
-    {% assign article_name = path_parts | last %}
-    {% assign extension = article_name | slice: -3, 3 %}
-    {% assign prefix = article_name | slice: 0, 9 %}
-    {% if path_parts.size == 1 and extension == '.md' and article_name != 'README.md' and prefix != 'category-' %}
+{% assign article_count = 0 %}
+{% assign category_count = 0 %}
+{% for entry in site.pages %}
+  {% assign path_parts = entry.path | split: '/' %}
+  {% assign entry_name = path_parts | last %}
+  {% assign extension = entry_name | slice: -3, 3 %}
+  {% assign prefix = entry_name | slice: 0, 9 %}
+  {% if path_parts.size == 1 and extension == '.md' %}
+    {% if prefix == 'category-' %}
+      {% assign category_count = category_count | plus: 1 %}
+    {% elsif entry_name != 'README.md' and entry_name != 'index.md' %}
       {% assign article_count = article_count | plus: 1 %}
     {% endif %}
-  {% endfor %}
+  {% endif %}
+{% endfor %}
 
-  <div class="stat">
-    <span class="stat-number">{{ article_count }}</span>
-    <span class="stat-label">已收录文章</span>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ page.description | default: '浏览专题内容、查找已发布文章。' | escape }}">
+  <title>{% if is_home %}文章与资料导航中心{% else %}{{ page.title | default: '文章与资料导航中心' | escape }} · 内容导航中心{% endif %}</title>
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  {% if is_articles %}<script src="{{ '/assets/site.js' | relative_url }}" defer></script>{% endif %}
+</head>
+<body id="top" class="{% if is_home %}home-page{% elsif is_articles %}articles-page{% else %}reading-page{% endif %}">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+
+  <header class="site-header">
+    <div class="header-inner shell">
+      <a class="logo" href="{{ '/' | relative_url }}" aria-label="内容导航中心，返回首页">
+        <span class="logo-mark" aria-hidden="true">文</span>
+        <span>内容导航中心</span>
+      </a>
+      <nav class="nav" aria-label="主导航">
+        <a href="{{ '/' | relative_url }}"{% if is_home %} aria-current="page"{% endif %}>首页</a>
+        <a href="{{ '/articles/' | relative_url }}#all-articles"{% if is_articles %} aria-current="page"{% endif %}>全部文章</a>
+        <a href="{{ '/' | relative_url }}#categories">分类导航</a>
+      </nav>
+    </div>
+  </header>
+
+  {% if is_home or is_articles %}
+  <section class="hero{% if is_articles %} hero-compact{% endif %}" aria-labelledby="hero-title">
+    <div class="hero-inner shell">
+      <div class="hero-copy">
+        <span class="eyebrow">文章与资料 · 一站浏览</span>
+        {% if is_home %}
+        <h1 id="hero-title">找到想读的文章，<br><span>从这里开始。</span></h1>
+        <p>按主题浏览已发布内容，或在文章目录中搜索标题。新增文章发布后，目录和篇数会自动同步。</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="{{ '/articles/' | relative_url }}#all-articles">浏览全部文章 <span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="#categories">按分类浏览</a>
+        </div>
+        {% else %}
+        <h1 id="hero-title">全部文章</h1>
+        <p>这里汇总已发布的文章。可以直接浏览，也可以输入关键词查找标题。</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#all-articles">查看文章列表 <span aria-hidden="true">↓</span></a>
+          <a class="button button-secondary" href="{{ '/' | relative_url }}">返回首页</a>
+        </div>
+        {% endif %}
+      </div>
+      <div class="hero-decoration" aria-hidden="true">
+        <span class="deco-line"></span><span class="deco-line"></span><span class="deco-line"></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats shell" aria-label="站点概况">
+    <div class="stat"><strong>{{ article_count }}</strong><span>已发布文章</span></div>
+    <div class="stat"><strong>{{ category_count }}</strong><span>内容分类</span></div>
+    <p>篇数随文章发布自动更新</p>
   </div>
+  {% endif %}
 
-  <div class="stat">
-    <span class="stat-number">1</span>
-    <span class="stat-label">内容分类</span>
-  </div>
+  <main id="main-content" class="page-shell shell">
+    {% unless is_home or is_articles %}
+    <nav class="breadcrumb" aria-label="当前位置">
+      <a href="{{ '/' | relative_url }}">首页</a><span aria-hidden="true">/</span>
+      <a href="{{ '/articles/' | relative_url }}#all-articles">全部文章</a><span aria-hidden="true">/</span>
+      <span>正文</span>
+    </nav>
+    {% endunless %}
 
-  <div class="stat">
-    <span class="stat-number">持续更新</span>
-    <span class="stat-label">内容状态</span>
-  </div>
+    <div class="content{% unless is_home or is_articles %} prose{% endunless %}">
+      {{ content }}
+    </div>
 
-</section>
+    {% unless is_home or is_articles %}
+    <div class="reading-actions">
+      <a class="button button-secondary" href="{{ '/articles/' | relative_url }}#all-articles">← 返回全部文章</a>
+      <a class="text-link" href="#top">回到顶部 ↑</a>
+    </div>
+    {% endunless %}
+  </main>
 
-
-<main class="page-container">
-
-  <div class="content" id="latest">
-
-    {{ content }}
-
-  </div>
-
-</main>
-
-
-<footer class="footer">
-
-  <div class="footer-inner">
-
-    <span>
-      内容导航中心 · 持续整理与更新
-    </span>
-
-    <span>
-      <a href="{{ '/' | relative_url }}">首页</a>
-      ·
-      <a href="{{ '/articles/' | relative_url }}#all-articles">全部文章</a>
-    </span>
-
-  </div>
-
-</footer>
-
+  <footer class="footer">
+    <div class="footer-inner shell">
+      <div><strong>内容导航中心</strong><span>便捷浏览已发布内容</span></div>
+      <nav aria-label="页脚导航">
+        <a href="{{ '/' | relative_url }}">首页</a>
+        <a href="{{ '/articles/' | relative_url }}#all-articles">全部文章</a>
+        <a href="#top">回到顶部 ↑</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>
