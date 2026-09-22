@@ -1,7 +1,7 @@
 ---
 layout: default
-title: "加拿大pc28预测类文章汇总"
-permalink: /category/canada-pc28/
+title: "文章分类与内容导航"
+permalink: /articles/
 ---
 # 加拿大pc28预测类文章汇总页
 
