@@ -1,9 +1,3 @@
----
-layout: default
-title: "文章与资料导航中心"
-description: "汇总最新发布内容、专题文章与资料索引。"
----
-
 这里汇总仓库内已经发布的内容，可按分类逐层浏览。
 
 <!-- gitflow:articles:start -->
