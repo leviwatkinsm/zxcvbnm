@@ -11,7 +11,7 @@ title: 全部文章
 <ul class="article-list">
 {% assign article_pages = site.pages | sort: 'path' | reverse %}
 {% for article in article_pages %}
-  {% assign article_path = article.path | remove_first: '/' %}
+  {% assign article_path = article.path %}
   {% assign path_parts = article_path | split: '/' %}
   {% assign article_name = path_parts | last %}
   {% assign extension = article_name | slice: -3, 3 %}
