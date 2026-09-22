@@ -1,14 +1,23 @@
 ---
 layout: default
-title: 文章中心
+title: 全部文章
 ---
 
-# 文章中心
+## 全部文章
+{: #all-articles }
 
-这里汇总本站已经发布的文章。
+这里汇总本站已经发布的全部文章，点击标题即可阅读。
 
-## 最新文章
-
-- [文章1](/article1.html)
-- [文章2](/article2.html)
-- [文章3](/article3.html)
+<ul class="article-list">
+{% assign article_pages = site.pages | sort: 'path' | reverse %}
+{% for article in article_pages %}
+  {% assign article_path = article.path | remove_first: '/' %}
+  {% assign path_parts = article_path | split: '/' %}
+  {% assign article_name = path_parts | last %}
+  {% assign extension = article_name | slice: -3, 3 %}
+  {% assign prefix = article_name | slice: 0, 9 %}
+  {% if path_parts.size == 1 and extension == '.md' and article_name != 'README.md' and prefix != 'category-' %}
+  <li><a href="{{ article.url | relative_url }}">{{ article_name | remove: '.md' | escape }}</a></li>
+  {% endif %}
+{% endfor %}
+</ul>

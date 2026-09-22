@@ -24,13 +24,13 @@
 
   <div class="header-inner">
 
-    <a href="/" class="logo">
+    <a href="{{ '/' | relative_url }}" class="logo">
       pc财经内容导航中心
     </a>
 
     <nav class="nav">
-      <a href="/">首页</a>
-      <a href="/articles/">全部文章</a>
+      <a href="{{ '/' | relative_url }}">首页</a>
+      <a href="{{ '/articles/' | relative_url }}#all-articles">全部文章</a>
     </nav>
 
   </div>
@@ -57,7 +57,7 @@
 
     <div class="hero-actions">
 
-      <a href="/articles/"
+      <a href="{{ '/articles/' | relative_url }}#all-articles"
          class="btn-primary">
         浏览全部文章
       </a>
@@ -76,8 +76,20 @@
 
 <section class="stats">
 
+  {% assign article_count = 0 %}
+  {% for article in site.pages %}
+    {% assign article_path = article.path | remove_first: '/' %}
+    {% assign path_parts = article_path | split: '/' %}
+    {% assign article_name = path_parts | last %}
+    {% assign extension = article_name | slice: -3, 3 %}
+    {% assign prefix = article_name | slice: 0, 9 %}
+    {% if path_parts.size == 1 and extension == '.md' and article_name != 'README.md' and prefix != 'category-' %}
+      {% assign article_count = article_count | plus: 1 %}
+    {% endif %}
+  {% endfor %}
+
   <div class="stat">
-    <span class="stat-number">103</span>
+    <span class="stat-number">{{ article_count }}</span>
     <span class="stat-label">已收录文章</span>
   </div>
 
@@ -114,9 +126,9 @@
     </span>
 
     <span>
-      <a href="/">首页</a>
+      <a href="{{ '/' | relative_url }}">首页</a>
       ·
-      <a href="/articles/">全部文章</a>
+      <a href="{{ '/articles/' | relative_url }}#all-articles">全部文章</a>
     </span>
 
   </div>
