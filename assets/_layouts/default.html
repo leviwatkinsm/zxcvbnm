@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{ page.title | default: site.title }}</title>
+
+  <link rel="stylesheet"
+        href="{{ '/assets/style.css' | relative_url }}">
+</head>
+
+<body>
+
+  <div class="page-shell">
+
+    <header class="site-header">
+      <h1>内容导航</h1>
+      <p>文章分类、最新内容与资料索引</p>
+    </header>
+
+    <main class="content">
+      {{ content }}
+    </main>
+
+  </div>
+
+</body>
+</html>
