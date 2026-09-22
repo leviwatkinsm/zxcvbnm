@@ -1,3 +1,8 @@
+---
+layout: default
+title: "加拿大pc28预测类文章汇总"
+permalink: /category/canada-pc28/
+---
 # 加拿大pc28预测类文章汇总页
 
 [← 返回 zxcvbnm 内容导航](README.md)
